@@ -48,10 +48,13 @@ var requestHandler = function(request, response) {
 
 
   var pathname = request.url;
+
+  var responseString = "you requested";
+
   console.log(pathname);
 
 
-  response.end("You requested:" + pathname);
+  response.end(JSON.stringify(responseString));
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
