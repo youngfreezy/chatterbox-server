@@ -45,16 +45,17 @@ var requestHandler = function(request, response) {
   // which includes the status and all headers.
   response.writeHead(statusCode, headers);
 
+  var responseObj = {
 
+  };
+
+  responseObj['results'] = [];
 
   var pathname = request.url;
 
-  var responseString = "you requested";
+  response.write(JSON.stringify(responseObj));
+  response.end();
 
-  console.log(pathname);
-
-
-  response.end(JSON.stringify(responseString));
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
