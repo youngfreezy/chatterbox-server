@@ -23,21 +23,11 @@ var ip = "127.0.0.1";
 // incoming requests.
 //
 // After creating the server, we will tell it to listen on the given port and IP. */
-var server = http.createServer();
+var server = http.createServer(handleRequest.requestHandler);
 console.log("Listening on http://" + ip + ":" + port);
 server.listen(port, ip);
 
 
-
-server.on('request', function(request, response){
-    //var pathname = url.parse(request.url).pathname;
-  var pathname = request.url;
-  console.log(pathname);
-
-  response.writeHead(200, {'Content-type': 'text/plain'});
-
-  response.end("You requested:" + pathname);
-});
 
 
 // To start this server, run:
