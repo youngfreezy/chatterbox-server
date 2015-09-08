@@ -47,7 +47,9 @@ var requestHandler = function(request, response) {
                 });
                 //request ended, you can now do something with the data
             request.on('end', function() {
-                responseObj['results'].push(JSON.parse(body));
+                var bodyObj = JSON.parse(body);
+                  bodyObj.objectId = Math.random()*10;
+                responseObj['results'].push(bodyObj);
                 // request ended -> do something with the data. set the headers. 
                 response.writeHead(statusCode, headers);
                 //writing the data to json
@@ -83,6 +85,13 @@ var requestHandler = function(request, response) {
 
             
 
+      }else if(request.method === "OPTIONS"){
+        var statusCode = 200;
+        var headers = defaultCorsHeaders;
+        headers['Content-Type'] = "application/json";
+        response.writeHead(statusCode, headers);
+       // response.write(JSON.stringify(responseObj));
+        response.end(JSON.stringify(responseObj));
       }
 
     }
