@@ -11,6 +11,10 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+
+  var responseObj = {};
+  responseObj['results'] = [];
+
 var requestHandler = function(request, response) {
     // Request and Response come from node's http module.
     //
@@ -27,8 +31,7 @@ var requestHandler = function(request, response) {
     // debugging help, but you should always be careful about leaving stray
     // console.logs in your code.
     console.log("********************");
-    var responseObj = {};
-    responseObj['results'] = [];
+
 
 
     if (request.method === "POST") {
@@ -41,11 +44,14 @@ var requestHandler = function(request, response) {
             request.on('data', function(data) {
                     console.log("receiving data....", body);
                     body += data;
-                })
+                });
                 //request ended, you can now do something with the data
             request.on('end', function() {
 
-                responseObj['results'].push(body);
+                responseObj['results'].push(JSON.parse(body));
+                console.log("This is typeof body below:");
+                console.log(typeof body)
+                console.log(body);
                 console.log("whats in results now:");
                 console.log(responseObj);
 
@@ -65,7 +71,7 @@ var requestHandler = function(request, response) {
 
     if (request.method === "GET") {
 
-        if (request.url === "/classes/messages") {
+        if (request.url === "/classes/messages" || request.url==="/log" || request.url === "/classes") {
             // The outgoing status.
             var statusCode = 200;
             // See the note below about CORS headers.
@@ -75,26 +81,25 @@ var requestHandler = function(request, response) {
             // You will need to change this if you are sending something
             // other than plain text, like JSON or HTML.
             headers['Content-Type'] = "text/plain";
-
-            console.log("IN THE GET HANDLER: we're sending back:");
-            console.log(JSON.stringify(responseObj));
             // .writeHead() writes to the request line and headers of the response,
             // which includes the status and all headers.
             response.writeHead(statusCode, headers);
+            console.log("IN THE GET HANDLER, what JSON.string(responseObj) looks like:");
+            var ref = JSON.stringify(responseObj);
+
             response.write(JSON.stringify(responseObj));
             response.end();
         }else{
           //For any other routes besides /classes/messages
-            var statusCode = 200;
+            var statusCode = 404;
             var headers = defaultCorsHeaders;
             headers['Content-Type'] = "text/plain";
             response.writeHead(statusCode, headers);
-            response.write(JSON.stringify(responseObj));
+            //response.write(JSON.stringify(responseObj));
             response.end();
         }
 
       }
-
 
     }
 
