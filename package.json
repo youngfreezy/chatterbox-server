@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "body-parser": "^1.13.3",
+    "cors": "^2.7.1",
     "express": "^4.13.3",
-    "express-cors-options": "0.0.4",
     "underscore": "^1.8.3"
   }
 }
