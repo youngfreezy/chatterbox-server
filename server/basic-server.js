@@ -1,31 +1,73 @@
 /* Import node's http module: */
+var express = require('express')
+var app = express();
 var http = require("http");
 var handleRequest = require("./request-handler");
 var url = require("url");
+var path = require("path");
+var bodyParser = require('body-parser')
 
-// Every server needs to listen on a port with a unique number. The
-// standard port for HTTP servers is port 80, but that port is
-// normally already claimed by another server and/or not accessible
-// so we'll use a standard testing port like 3000, other common development
-// ports are 8080 and 1337.
-var port = 3000;
+app.use(app.router);
 
-// For now, since you're running this server on your local machine,
-// we'll have it listen on the IP address 127.0.0.1, which is a
-// special address that always refers to localhost.
-var ip = "127.0.0.1";
+var options = {
+    origin: '*', // default: '*' 
+    method: 'GET,PUT,POST,DELETE,OPTIONS', // default: 'GET,PUT,POST,DELETE,HEAD,OPTIONS' 
+    headers: 'Content-Type, Content-Length, accept' // default: 'Content-Type, Authorization, Content-Length, X-Requested-With, X-HTTP-Method-Override' 
+    //"access-control-allow-origin": "*",
+    //"access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+    //"access-control-allow-headers": "content-type, accept",
+    "access-control-max-age": 10 // Seconds.
+
+};
+ 
+app.use(require('express-cors-options')(options));
+
+var responseObj = {};
+responseObj['results'] = [];
+
+// all environments
+app.get('/classes/messages', function(request, response) {
+    response.send(JSON.stringify(responseObj));
+});
+app.get('/log', function(request, response) {
+    response.send(JSON.stringify(responseObj));
+});
+app.get('/classes', function(request, response) {
+    response.send(JSON.stringify(responseObj));
+});
+app.get('/classes/room1', function(request, response) {
+    response.send(JSON.stringify(responseObj));
+});
+
+app.get('/*', function(request, response) {
+    response.send(JSON.stringify(responseObj));
+});
+
+//TODO: posts
+
+app.post('/classes/messages', bodyParser.json(), function(request, response) {
+  // response.sendFile(path.join(__dirname, '../views', 'homepage.html'));
+  console.log(typeof request.body);
+  responseObj.results.push(request.body);
+});
+
+app.post('/classes/room1', bodyParser.json(), function(request, response) {
+  responseObj.results.push(request.body);
+  
+});
+
+app.post('/*', bodyParser.json(), function(request, response){
+  responseObj.results.push(request.body);
+});
+
+app.set('port', process.env.PORT || 3000);
+
+app.listen(app.get("port"));
+
+//1) bodyparser.json()
+//2) OPTIONS
 
 
-
-// We use node's http module to create a server.
-//
-// The function we pass to http.createServer will be used to handle all
-// incoming requests.
-//
-// After creating the server, we will tell it to listen on the given port and IP. */
-var server = http.createServer(handleRequest.requestHandler);
-console.log("Listening on http://" + ip + ":" + port);
-server.listen(port, ip);
 
 
 
