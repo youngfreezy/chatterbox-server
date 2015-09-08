@@ -1,20 +1,35 @@
 /* Import node's http module: */
-var express = require('express')
-var cors = require('cors')
-var app = express()
+var express = require('express');
+var cors = require('cors');
+var app = express();
 var http = require("http");
 var handleRequest = require("./request-handler");
 var url = require("url");
 var path = require("path");
-var bodyParser = require('body-parser')
-
-
+var bodyParser = require('body-parser');
+var fs = require("fs");
 
 app.use(cors());
 
-
 var responseObj = {};
-responseObj['results'] = [];
+//responseObj['results'] = [];
+
+var data = fs.readFileSync(path.join(__dirname, './', 'chatdata.txt'));
+//1) Load the chat log if it exsits
+if (data){
+  responseObj = JSON.parse(data);  
+}else{
+  responseObj['results'] = [];
+}
+
+//In current versions of node you MUST specify an ABSOLUTE location
+  //relative location: ../myfolder/file.txt
+  //absolute: c:\myprojects\nodeproject\myfolder\file.txt
+
+//2) **SAVE** the responseObj as its gets updated
+//3) Try to do the loading asynchronously
+
+
 
 // all environments
 app.get('/classes/messages', function(request, response) {
