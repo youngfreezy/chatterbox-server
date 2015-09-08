@@ -36,7 +36,7 @@ var requestHandler = function(request, response) {
 
     if (request.method === "POST") {
 
-        if (request.url === "/classes/messages") {
+        if (request.url === "/classes/messages" || request.url === "/classes/room1") {
             var statusCode = 201;
             var headers = defaultCorsHeaders;
             var body = '';
@@ -47,20 +47,13 @@ var requestHandler = function(request, response) {
                 });
                 //request ended, you can now do something with the data
             request.on('end', function() {
-
                 responseObj['results'].push(JSON.parse(body));
-                console.log("This is typeof body below:");
-                console.log(typeof body)
-                console.log(body);
-                console.log("whats in results now:");
-                console.log(responseObj);
-
                 // request ended -> do something with the data. set the headers. 
                 response.writeHead(statusCode, headers);
                 //writing the data to json
-                response.write(JSON.stringify(responseObj));
+                //response.write();
                 //ending the response. 
-                response.end();
+                response.end(JSON.stringify(responseObj));
 
             });
 
@@ -70,34 +63,25 @@ var requestHandler = function(request, response) {
     } else {
 
     if (request.method === "GET") {
-
-        if (request.url === "/classes/messages" || request.url==="/log" || request.url === "/classes") {
+        var statusCode = 404;
+        var headers = defaultCorsHeaders;
+        console.log("request.url is ", request.url);
+        if (request.url === "/classes/messages" || request.url==="/log" || request.url === "/classes" || request.url === "/classes/room1") {
             // The outgoing status.
-            var statusCode = 200;
-            // See the note below about CORS headers.
-            var headers = defaultCorsHeaders;
-            // Tell the client we are sending them plain text.
-            //
-            // You will need to change this if you are sending something
-            // other than plain text, like JSON or HTML.
+            statusCode = 200;
             headers['Content-Type'] = "text/plain";
-            // .writeHead() writes to the request line and headers of the response,
-            // which includes the status and all headers.
             response.writeHead(statusCode, headers);
-            console.log("IN THE GET HANDLER, what JSON.string(responseObj) looks like:");
-            var ref = JSON.stringify(responseObj);
-
-            response.write(JSON.stringify(responseObj));
-            response.end();
+           // response.write(JSON.stringify(responseObj));
+            response.end(JSON.stringify(responseObj));
         }else{
           //For any other routes besides /classes/messages
-            var statusCode = 404;
-            var headers = defaultCorsHeaders;
             headers['Content-Type'] = "text/plain";
             response.writeHead(statusCode, headers);
-            //response.write(JSON.stringify(responseObj));
             response.end();
+            //response.write(JSON.stringify(responseObj));
         }
+
+            
 
       }
 
